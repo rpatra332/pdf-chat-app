@@ -1,6 +1,8 @@
 # PDF CHAT APPLICATION
 ---
-App built with LangChain, Google PaLm2 Generative AI and streamlit which can help you ask question to your uploaded pdf file.
+App built with LangChain, Google Gemini-Pro Generative AI and streamlit which can help you ask question to your uploaded pdf file.
+
+This application is currently context-only, will not be able to use the web in case the provided context/ pdf does not have the result for the query.
 
 ---
 

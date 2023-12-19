@@ -1,8 +1,8 @@
 import os
 import streamlit as st
 from streamlit_chat import message
-from langchain.llms.google_palm import GooglePalm
-from langchain.embeddings.google_palm import GooglePalmEmbeddings
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain.vectorstores.faiss import FAISS
 from langchain.chains.question_answering import load_qa_chain
 
@@ -17,7 +17,7 @@ caption_text = "By <a href=\"https://github.com/rpatra332\" target=\"_blank\" re
 st.set_page_config(page_icon=page_icon,
                    page_title=page_title, layout=layout)
 st.title(body=f'📕 PDF Chat',
-         help="Made With LangChain And Google PaLm 2 API")
+         help="Made With LangChain And Google Gemini API")
 st.caption(caption_text, unsafe_allow_html=True)
 
 # --- PDF FROM UI ---
@@ -36,18 +36,21 @@ if pdf_file:
     text_chunks = split_raw_text(raw_text=raw_text)
 
     # --- EMBEDDING DOWNLOAD ---
-    embeddings = GooglePalmEmbeddings(
-        google_api_key=_GOOGLE_GENERATIVE_API_KEY
+    embeddings = GoogleGenerativeAIEmbeddings(
+        google_api_key=_GOOGLE_GENERATIVE_API_KEY,
+        model="models/embedding-001"
     )
 
     # --- BUILDING FAISS VECTOR STORE ---
     document_search = FAISS.from_texts(text_chunks, embeddings)
 
-    # --- PALM QA CHAIN ---
-    Palm = GooglePalm(
-        google_api_key=_GOOGLE_GENERATIVE_API_KEY
+    # --- GEMINI-PRO QA CHAIN ---
+    GeminiPro = ChatGoogleGenerativeAI(
+        google_api_key=_GOOGLE_GENERATIVE_API_KEY,
+        model="gemini-pro",
+        convert_system_message_to_human=True
     )
-    chain = load_qa_chain(Palm, chain_type="stuff")
+    chain = load_qa_chain(GeminiPro, chain_type="stuff")
 
     # --- CREATING A STATE TO STORE CHAT HISTORY ---
     if "messages" not in st.session_state:
